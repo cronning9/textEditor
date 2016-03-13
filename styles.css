@@ -1,0 +1,17 @@
+header {
+    width: 75%;
+    padding: 5px;
+    text-align: center;
+    margin: 0 auto;
+
+}
+
+header p {
+    font-size: 12px;
+}
+
+#text {
+    margin: 0 auto;
+    width: 90%;
+    height: 600px;
+}
