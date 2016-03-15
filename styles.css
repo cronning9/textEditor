@@ -10,6 +10,10 @@ header p {
     font-size: 12px;
 }
 
+#select-file {
+    display: inline-block;
+    margin-left: 50px;
+}
 #text {
     display: block;
     margin: 0 auto;
