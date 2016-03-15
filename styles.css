@@ -11,7 +11,22 @@ header p {
 }
 
 #text {
+    display: block;
     margin: 0 auto;
-    width: 90%;
+    width: 92%;
     height: 600px;
+}
+
+#text-edit {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#text-edit #controls: {
+    left: 5em;
+    margin-top: 5em;
+}
+
+#filetype {
+    margin-left: 15px;
 }

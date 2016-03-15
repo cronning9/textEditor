@@ -13,11 +13,24 @@
          for now you probably need to have access to localhost:8000
          but I'm trying okay?</p>
     </header>
-    <textarea id="text" form="text_edit"></textarea>
-
-    <form id="text_edit" method="put">
-
-
+    <form id="text-edit" method="post">
+      <textarea id="text" form="text-edit" name="text"></textarea>
+      <div id="controls">
+        <p><input id="title" name="title" type="text" form="text-edit" value="Title"> Title
+          <select id="filetype">
+            <option>.txt</option>
+            <option>.rtf</option>
+            <option>.html</option>
+            <option>.css</option>
+            <option>.js</option>
+            <option>.json</option>
+            <option>.rb</option>
+            <option></option>
+          </select>
+        </p>
+        <p><input id="author" name="author" type="text" form="text-edit" value="Author"> Author</p>
+        <p><button id="submit" name="submti" type="submit" form="text-edit">Save</button></p>
+      </div>
     </form>
   </body>
 </html>
