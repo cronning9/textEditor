@@ -16,6 +16,7 @@ Router.prototype.resolve = function(request, response) {
     if (!match || route.method != request.method) {
       return false;
     }
+
     var urlParts = match.slice(1).map(decodeURIComponent);
     route.handler.apply(null, [request, response].concat(urlParts));
     return true;
