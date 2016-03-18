@@ -16,11 +16,11 @@ function respond(response, status, data, type) {
   response.writeHead(status, {
     "Content-Type": type || "text/plain"
   });
-  response.end(data);
+  response.end(data.toString());
 }
 
-function respondJSON(response, status, data) {
-  respond(response, status, JSON.stringify(data), "application/json");
+function respondFile(response, status, data) {
+  respond(response, status, data);
 }
 
 var files = Object.create(null);
@@ -31,10 +31,15 @@ var files = Object.create(null);
 fs.stat("./public/files.json", function(error, stats) {
   if (error && error.code == "ENOENT") {
     console.log("files.json not initialized");
+    fs.writeFile("./public/files.json", "", function(error) {
+      if (error) {
+        respond(response, 501, error.toString());
+      }
+    });
   } else {
     fs.readFile("./public/files.json", "utf-8", function(error, data) {
       files = JSON.parse(data);
-      //console.log(files);
+      console.log(files);
     });
   }
 });
@@ -56,6 +61,30 @@ function writeToFile(name, data) {
   });
 }
 
-router.add("GET", /^\/files\/([^\/]+)$/, function(request, response, title) {
+// Takes the title of file, finds it in `files`, and if it exists,
+// return the content of the file
 
+router.add("GET", /^\/files\/([^\/]+)$/, function(request, response, title) {
+  if (title in files) {
+    respondFile(response, 200, "./public/files/" + title);
+    /*fs.readFile("./public/files/" + title, function(error, data) {
+      if (error) throw error;
+      return data.toString();
+    });*/
+  } else {
+    respond(response, 404, "No file '" + title + "' found.");
+  }
 });
+
+router.add("DELETE", /^\/files\/([^\/]+)$/, function(request, response, title) {
+  if (title in files) {
+    var file = "./public/files/" + title;
+    fs.unlink(file);
+  }
+  respond(response, 204, null);
+});
+
+
+
+
+
