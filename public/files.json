@@ -1,6 +1,12 @@
 {
-"file":
-	{"title": "file",
-	 "author": "me"}
+  "file.txt":
+	{"title": "file.txt",
+	 "author": "me",
+     "content": "" },
+
+  "boo.txt":
+    {"title": "boo.txt",
+    "author": "you",
+    "content": ""}
 }
 

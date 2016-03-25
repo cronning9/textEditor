@@ -16,11 +16,11 @@ function respond(response, status, data, type) {
   response.writeHead(status, {
     "Content-Type": type || "text/plain"
   });
-  response.end(data.toString());
+  response.end(data);
 }
 
-function respondFile(response, status, data) {
-  respond(response, status, data);
+function respondJSON(response, status, data) {
+  respond(response, status, JSON.stringify(data), "application/json");;
 }
 
 var files = Object.create(null);
@@ -61,12 +61,36 @@ function writeToFile(name, data) {
   });
 }
 
-// Takes the title of file, finds it in `files`, and if it exists,
-// return the content of the file
+function readStreamAsJSON(stream, callback) {
+  var data = "";
+  stream.on("data", function(chunk) {
+    data += chunk;
+  });
+  stream.on("end", function() {
+    var result, error;
+    try { result = JSON.parse(data); }
+    catch (e) { error = e; }
+    callback(error, result);
+  });
+  stream.on("error", function(error) {
+    callback(error);
+  });
+}
+
+// Takes the title of file, finds it in `files`, and if it exists
+// add its content to the files object and return that specific content
+// as a string
 
 router.add("GET", /^\/files\/([^\/]+)$/, function(request, response, title) {
-  if (title in files) {
-    respondFile(response, 200, "./public/files/" + title);
+  var splitted = title.split(".");
+  var name = splitted[0];
+  var extension = "." + splitted[1];
+  if (name in files) {
+    fs.readFile("./public/files/" + name + extension, "utf-8", function(error, data) {
+      var obj = files[name];
+      obj.content = data;
+    });
+    respond(response, 200, files[name].content);
     /*fs.readFile("./public/files/" + title, function(error, data) {
       if (error) throw error;
       return data.toString();
@@ -74,6 +98,29 @@ router.add("GET", /^\/files\/([^\/]+)$/, function(request, response, title) {
   } else {
     respond(response, 404, "No file '" + title + "' found.");
   }
+});
+
+// Handles request to populate the file list with titles
+router.add("GET", /^\/files$/, function(request, response) {
+  respondJSON(response, 200, files);
+});
+
+router.add("POST", /^\/files\/([^\/]+)$/, function(request, response, title) {
+  readStreamAsJSON(request, function(error, file) {
+    if (error) {
+      respond(response, 400, error.toString());
+    } else if (!file ||
+               typeof file.author != "string" ||
+               typeof file.content != "string") {
+      respond(response, 400, "Bad data");
+    } else {
+      files[title] = {title: title,
+                      author: file.author};
+      fs.writeFile("./public/files" + title + file.ext, file.content, function(error) {
+        if (error) console.log(error);
+      });
+    }
+  });
 });
 
 router.add("DELETE", /^\/files\/([^\/]+)$/, function(request, response, title) {
