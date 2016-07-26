@@ -1,6 +1,5 @@
 # textEditor
 
-Creating a basic text editor that stores and retreives files in/from the "cloud" (read: localhost:8000 or heroku). 
+This is a basic test editor, originally intended to save to and retrieve from a database. That didn't happen. 
 
-This is basically just so I can work on this from different computers. Nothing really consequential. Good for
-a first project with no aid from a tutorial.
+The interesting part of this is the server built from scratch in pure Javascript with some Node.js core dependencies. The router is designed off a prototype, with new routes configurable in the main server file.
